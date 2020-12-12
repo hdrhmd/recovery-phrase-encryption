@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bip39": "^3.0.2"
+    "bip39": "^3.0.2",
+    "prompt": "^1.0.0"
   }
 }
