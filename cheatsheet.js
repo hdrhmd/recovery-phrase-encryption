@@ -10,7 +10,7 @@ const wordToHash = (word, salt) => {
 };
 
 const indexToOct = (index) => {
-    return index.toString('8') * 1 + 111;
+    return index.toString('8') * 1 + 1111;
 }
 
 const findMinLen = (hashs) => {
