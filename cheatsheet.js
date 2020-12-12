@@ -1,6 +1,7 @@
 const bip39 = require('bip39');
 const crypto = require("crypto");
 const prompt = require('prompt');
+const fs = require('fs');
 
 const wordToHash = (word, salt) => {
     return crypto.createHmac('sha256', salt)
@@ -27,7 +28,6 @@ prompt.start();
 
 prompt.get(['salt'], (err, result) => {
     if (err) throw 'Error getting salt from user.';
-    console.log('Salt: ' + result.salt);
     const words = bip39.wordlists.english;
     const transformed = words.map((w, i) => {
         return {
@@ -40,6 +40,7 @@ prompt.get(['salt'], (err, result) => {
     const minLen = findMinLen(transformed.map(w => w.hash));
     const minified = transformed.map(w => (w.hash = w.hash.slice(0, minLen), w));
     const stringified = minified.map(w => [w.index, w.octal, w.hash, w.label].join(' ')).join('\n');
-    console.log(stringified);
+    console.log('Encrypted using: ' + result.salt);
+    fs.writeFileSync('./output.txt', stringified);
 });
 
