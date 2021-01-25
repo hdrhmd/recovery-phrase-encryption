@@ -9,10 +9,6 @@ const wordToHash = (word, salt) => {
     .digest('hex');
 };
 
-const indexToOct = (index) => {
-    return index.toString('8') * 1 + 1111;
-}
-
 const findMinLen = (hashs) => {
     for (let i=1; i<=64; i++) {
         const hashSubStrs = hashs.map(h => h.slice(0, i));
@@ -31,16 +27,17 @@ prompt.get(['salt'], (err, result) => {
     const words = bip39.wordlists.english;
     const transformed = words.map((w, i) => {
         return {
-            index: ('000' + i).slice(-4),
             label: w,
-            octal: indexToOct(i),
             hash: wordToHash(w, result.salt)
         };
     });
     const minLen = findMinLen(transformed.map(w => w.hash));
     const minified = transformed.map(w => (w.hash = w.hash.slice(0, minLen), w));
-    const stringified = minified.map(w => [w.index, w.octal, w.hash, w.label].join(' ')).join('\n');
+    const labelsorted = minified.map(w => [w.label, w.hash].join(': ')).join(' | ');
+    minified.sort((a, b) => a.hash.localeCompare(b.hash));
+    const hashsorted = minified.map(w => [w.hash, w.label].join(': ')).join(' | ');
     console.log('Encrypted using: ' + result.salt);
-    fs.writeFileSync('./output.txt', stringified);
+    fs.writeFileSync('./labelsorted.txt', labelsorted);
+    fs.writeFileSync('./hashsorted.txt', hashsorted);
 });
 
